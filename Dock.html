@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>macOS风格Dock栏</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  
+  <!-- 配置Tailwind CSS -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            macDock: '#1e1e1e',
+            macDockActive: '#0071e3',
+            macDockIcon: '#ffffff',
+          },
+          fontFamily: {
+            mac: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'sans-serif'],
+          },
+        },
+      }
+    }
+  </script>
+  
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .mac-dock {
+        backdrop-filter: blur(20px);
+        background-color: rgba(30, 30, 30, 0.8);
+        box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.2);
+      }
+      .dock-icon {
+        transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), margin 0.2s ease;
+      }
+      .dock-icon:hover {
+        transform: scale(1.8);
+        z-index: 10;
+      }
+      .dock-icon:hover + .dock-icon,
+      .dock-icon.prev-hover {
+        transform: scale(1.4);
+        z-index: 5;
+      }
+      .dock-separator {
+        width: 1px;
+        height: 60%;
+        background-color: rgba(255, 255, 255, 0.2);
+        margin: 0 8px;
+      }
+      .app-badge {
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #ff3b30;
+        color: white;
+        border-radius: 999px;
+        padding: 1px 4px;
+        font-size: 10px;
+        font-weight: bold;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+      }
+      .dock-icon:hover .app-badge {
+        opacity: 1;
+      }
+      .indicator-dot {
+        position: absolute;
+        bottom: -6px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 6px;
+        height: 6px;
+        background-color: #34c759;
+        border-radius: 50%;
+      }
+    }
+  </style>
+</head>
+<body class="bg-black min-h-screen overflow-hidden">
+  <!-- 模拟桌面背景 -->
+  <div class="fixed inset-0 bg-gradient-to-br from-blue-900 to-indigo-900 z-0"></div>
+  
+  <!-- Dock栏 -->
+  <div class="mac-dock fixed bottom-2 left-1/2 -translate-x-1/2 rounded-xl flex items-center justify-center h-16 px-4 z-50">
+    <div class="flex items-center space-x-2 md:space-x-4">
+      <!-- 应用图标 - 访达 -->
+      <div class="dock-icon relative flex flex-col items-center cursor-pointer group">
+        <div class="w-10 h-10 rounded-md bg-white/10 flex items-center justify-center mb-1 relative">
+          <i class="fa fa-folder-open text-macDockIcon text-lg"></i>
+          <div class="indicator-dot"></div>
+        </div>
+        <span class="text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 mt-1">访达</span>
+      </div>
+      
+      <!-- 应用图标 - Safari -->
+      <div class="dock-icon relative flex flex-col items-center cursor-pointer group">
+        <div class="w-10 h-10 rounded-md bg-white/10 flex items-center justify-center mb-1 relative">
+          <i class="fa fa-globe text-macDockIcon text-lg"></i>
+          <div class="app-badge">5</div>
+        </div>
+        <span class="text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 mt-1">Safari</span>
+      </div>
+      
+      <!-- 应用图标 - 邮件 -->
+      <div class="dock-icon relative flex flex-col items-center cursor-pointer group">
+        <div class="w-10 h-10 rounded-md bg-white/10 flex items-center justify-center mb-1 relative">
+          <i class="fa fa-envelope text-macDockIcon text-lg"></i>
+          <div class="app-badge">3</div>
+        </div>
+        <span class="text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 mt-1">邮件</span>
+      </div>
+      
+      <!-- 应用图标 - 备忘录 -->
+      <div class="dock-icon relative flex flex-col items-center cursor-pointer group">
+        <div class="w-10 h-10 rounded-md bg-white/10 flex items-center justify-center mb-1 relative">
+          <i class="fa fa-sticky-note-o text-macDockIcon text-lg"></i>
+          <div class="indicator-dot"></div>
+        </div>
+        <span class="text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 mt-1">备忘录</span>
+      </div>
+      
+      <!-- 分隔符 -->
+      <div class="dock-separator"></div>
+      
+      <!-- 应用图标 - 下载 -->
+      <div class="dock-icon relative flex flex-col items-center cursor-pointer group">
+        <div class="w-10 h-10 rounded-md bg-white/10 flex items-center justify-center mb-1 relative">
+          <i class="fa fa-download text-macDockIcon text-lg"></i>
+        </div>
+        <span class="text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 mt-1">下载</span>
+      </div>
+      
+      <!-- 应用图标 - 文稿 -->
+      <div class="dock-icon relative flex flex-col items-center cursor-pointer group">
+        <div class="w-10 h-10 rounded-md bg-white/10 flex items-center justify-center mb-1 relative">
+          <i class="fa fa-file-text-o text-macDockIcon text-lg"></i>
+        </div>
+        <span class="text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 mt-1">文稿</span>
+      </div>
+      
+      <!-- 应用图标 - 照片 -->
+      <div class="dock-icon relative flex flex-col items-center cursor-pointer group">
+        <div class="w-10 h-10 rounded-md bg-white/10 flex items-center justify-center mb-1 relative">
+          <i class="fa fa-camera text-macDockIcon text-lg"></i>
+        </div>
+        <span class="text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 mt-1">照片</span>
+      </div>
+      
+      <!-- 应用图标 - 设置 -->
+      <div class="dock-icon relative flex flex-col items-center cursor-pointer group">
+        <div class="w-10 h-10 rounded-md bg-white/10 flex items-center justify-center mb-1 relative">
+          <i class="fa fa-cog text-macDockIcon text-lg"></i>
+        </div>
+        <span class="text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 mt-1">设置</span>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // 实现Dock栏的动态效果
+    document.addEventListener('DOMContentLoaded', function() {
+      const dockIcons = document.querySelectorAll('.dock-icon');
+      
+      dockIcons.forEach((icon, index) => {
+        // 鼠标悬停效果
+        icon.addEventListener('mouseenter', function() {
+          // 获取当前图标索引
+          const currentIndex = Array.from(dockIcons).indexOf(this);
+          
+          // 为当前图标和相邻图标添加特殊类
+          dockIcons.forEach((icon, i) => {
+            // 清除所有prev-hover类
+            icon.classList.remove('prev-hover');
+            
+            // 为当前图标的前一个图标添加prev-hover类
+            if (i === currentIndex - 1) {
+              icon.classList.add('prev-hover');
+            }
+          });
+        });
+        
+        // 鼠标离开效果
+        icon.addEventListener('mouseleave', function() {
+          // 清除所有prev-hover类
+          dockIcons.forEach(icon => {
+            icon.classList.remove('prev-hover');
+          });
+        });
+      });
+    });
+  </script>
+</body>
+</html>    
